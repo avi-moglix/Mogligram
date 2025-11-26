@@ -127,7 +127,7 @@ const ProfileScreen = ({ navigation }) => {
             title={isSaved ? 'Saved' : 'Save'}
             onPress={() => handleSaveField(field)}
             disabled={!hasChanged || !formData[field]}
-            color={!hasChanged || !formData[field] ? 'disabledText' : 'primary'}
+            color={!hasChanged || !formData[field] ? 'disabledText' : '#d9232d'}
             size="small"
             variant="solid"
           />
@@ -164,7 +164,7 @@ const ProfileScreen = ({ navigation }) => {
             title={isSaved ? 'Saved' : 'Save'}
             onPress={() => handleSaveField(field)}
             disabled={!hasChanged || !formData[field]}
-            color={!hasChanged || !formData[field] ? 'disabledText' : 'primary'}
+            color={!hasChanged || !formData[field] ? 'disabledText' : '#d9232d'}
             size="small"
             variant="solid"
           />
@@ -199,7 +199,7 @@ const ProfileScreen = ({ navigation }) => {
             title={isSaved ? 'Saved' : 'Save'}
             onPress={() => handleSaveField(field)}
             disabled={!hasChanged || !formData[field].trim()}
-            color={!hasChanged || !formData[field].trim() ? 'disabledText' : 'primary'}
+            color={!hasChanged || !formData[field].trim() ? 'disabledText' : '#d9232d'}
             size="small"
             variant="solid"
           />
@@ -271,7 +271,7 @@ const ProfileScreen = ({ navigation }) => {
           <AButton
             title="Logout"
             onPress={handleLogout}
-            color="danger"
+            color="#d9232d"
             size="large"
             variant="solid"
           />

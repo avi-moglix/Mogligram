@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@atom-design-mog/accordions": "^1.0.1",
-    "@atom-design-mog/buttons": "^1.0.2",
+    "@atom-design-mog/buttons": "^1.0.3",
     "@atom-design-mog/cardslist": "^1.0.1",
     "@atom-design-mog/datepicker": "^1.0.2",
     "@atom-design-mog/dropdown": "^1.0.1",

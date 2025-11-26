@@ -72,7 +72,7 @@ const HomeScreen = ({ navigation }) => {
       <AButton
         title="Logout"
         onPress={handleLogout}
-        color="danger"
+        color="#d9232d"
         size="small"
         variant="outlined"
       />
@@ -114,7 +114,7 @@ const HomeScreen = ({ navigation }) => {
       <AButton
         title="Retry"
         onPress={loadPosts}
-        color="primary"
+        color="#d9232d"
         size="medium"
         variant="solid"
       />
@@ -127,7 +127,7 @@ const HomeScreen = ({ navigation }) => {
       <AButton
         title="Retry"
         onPress={loadPosts}
-        color="primary"
+        color="#d9232d"
         size="medium"
         variant="solid"
       />

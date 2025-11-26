@@ -57,7 +57,7 @@ const PostDetailScreen = ({ route, navigation }) => {
           <AButton
             title="Back"
             onPress={() => navigation.goBack()}
-            color="danger"
+            color="#d9232d"
             size="medium"
             variant="text"
           />
@@ -79,7 +79,7 @@ const PostDetailScreen = ({ route, navigation }) => {
           <AButton
             title="Back"
             onPress={() => navigation.goBack()}
-            color="danger"
+            color="#d9232d"
             size="medium"
             variant="text"
           />
@@ -91,7 +91,7 @@ const PostDetailScreen = ({ route, navigation }) => {
           <AButton
             title="Retry"
             onPress={loadPostDetails}
-            color="primary"
+            color="#d9232d"
             size="medium"
             variant="solid"
           />
@@ -107,7 +107,7 @@ const PostDetailScreen = ({ route, navigation }) => {
         <AButton
           title="Back"
           onPress={() => navigation.goBack()}
-          color="danger"
+          color="#d9232d"
           size="medium"
           variant="text"
         />

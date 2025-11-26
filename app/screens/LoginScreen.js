@@ -151,7 +151,7 @@ const LoginScreen = ({ navigation }) => {
                 title={loading ? 'Signing in...' : 'Login'}
                 onPress={handleLogin}
                 disabled={!isFormValid() || loading}
-                color="primary"
+                color="#d9232d"
                 size="large"
                 variant="solid"
               />
