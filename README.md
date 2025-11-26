@@ -1,97 +1,194 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Mogligram 📱
 
-# Getting Started
+**Connect • Share • Inspire**
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+A full-featured social media React Native application with authentication, posts feed, user profiles, and more!
 
-## Step 1: Start Metro
+---
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## 🌟 Features
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+### 🔐 Authentication
+- Secure login with email or phone number
+- Password validation (8+ chars, uppercase, number, special character)
+- Real-time form validation
+- Persistent sessions with AsyncStorage
+- Auto-login on app restart
 
-```sh
-# Using npm
-npm start
+### 🏠 Posts Feed
+- Beautiful card-based posts from API
+- Pull-to-refresh functionality
+- Smooth scrolling through 100+ posts
+- Tap any post to view details
+- User avatars and metadata
+- Loading skeletons for better UX
 
-# OR using Yarn
-yarn start
-```
+### 👤 User Profile
+- Complete profile dashboard
+- Progress bar showing completion (0-100%)
+- 8 editable fields (Name, Bio, Age, Phone, Location, Company, Website, Interests)
+- Individual save buttons with feedback
+- Data persistence across sessions
 
-## Step 2: Build and run your app
+### 📝 Post Details
+- Full post content view
+- Comments section with user info
+- Beautiful UI with cards
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+---
 
-### Android
+## 🚀 Quick Start
 
-```sh
-# Using npm
+### Installation
+
+Dependencies are already installed! Just run:
+
+```bash
+# Android
 npm run android
 
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+# iOS (after: cd ios && pod install && cd ..)
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+---
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+## 🔑 Test Login
 
-## Step 3: Modify your app
+**Option 1 - Email:**
+```
+Email: test@mogligram.com
+Password: Test@1234
+```
 
-Now that you have successfully run the app, let's make changes!
+**Option 2 - Phone:**
+```
+Phone: 1234567890
+Password: Mogligram@123
+```
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+### Password Requirements:
+- ✓ Minimum 8 characters
+- ✓ At least 1 uppercase letter
+- ✓ At least 1 number
+- ✓ At least 1 special character
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+---
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+## 📂 Project Structure
 
-## Congratulations! :tada:
+```
+Mogligram/
+├── app/
+│   ├── components/        # UI components
+│   ├── navigation/        # Navigation config
+│   ├── redux/            # State management
+│   ├── screens/          # All screens
+│   ├── utils/            # Helpers (API, storage, validation)
+│   └── App.js            # Root component
+├── android/              # Android native
+├── ios/                  # iOS native
+└── index.js              # Entry point
+```
 
-You've successfully run and modified your React Native App. :partying_face:
+---
 
-### Now what?
+## 🛠️ Tech Stack
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+- React Native 0.82.1
+- React Navigation (Stack + Tabs)
+- Redux Toolkit
+- AsyncStorage
+- Axios
+- JSONPlaceholder API
+- react-native-progress
 
-# Troubleshooting
+---
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## 📱 App Flow
 
-# Learn More
+```
+Launch → Splash → Check Auth
+  ├─ Not Logged In → Login Screen
+  └─ Logged In → Home (Posts Feed)
+      ├─ Tap Post → Post Detail
+      ├─ Profile Tab → Edit Profile
+      └─ Logout → Back to Login
+```
 
-To learn more about React Native, take a look at the following resources:
+---
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+## 🎯 Key Features
+
+✅ Real-time validation  
+✅ Persistent login  
+✅ Profile progress tracking  
+✅ Pull-to-refresh  
+✅ Skeleton loaders  
+✅ Error handling  
+✅ Toast notifications  
+✅ Smooth animations  
+
+---
+
+## 🧪 Quick Test
+
+1. Launch app → See splash screen
+2. Login with: `test@mogligram.com` / `Test@1234`
+3. View posts → Pull to refresh
+4. Tap any post → View details
+5. Go to Profile → Fill fields → See progress increase
+6. Close & reopen app → Still logged in ✅
+7. Logout → Data cleared ✅
+
+---
+
+## 🔧 Troubleshooting
+
+**Clear Cache:**
+```bash
+npm start --reset-cache
+```
+
+**Clean Android:**
+```bash
+cd android && ./gradlew clean && cd ..
+```
+
+**Reinstall iOS Pods:**
+```bash
+cd ios && pod install && cd ..
+```
+
+---
+
+## 📝 API
+
+Uses **JSONPlaceholder** for demo data:
+- GET /posts
+- GET /posts/:id
+- GET /posts/:id/comments
+
+---
+
+## 🚧 Future Ideas
+
+- Create posts
+- Like/comment
+- Image upload
+- Dark mode
+- Search & filter
+- Direct messaging
+- Push notifications
+
+---
+
+## 📄 License
+
+MIT
+
+---
+
+**Mogligram** - Connect • Share • Inspire 🚀
+
+Built with ❤️ using React Native
