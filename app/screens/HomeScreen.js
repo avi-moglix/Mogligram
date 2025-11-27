@@ -139,10 +139,12 @@ const HomeScreen = ({ navigation }) => {
       {renderHeader()}
       
       <View style={styles.titleContainer}>
-        {/* <Text style={styles.title}>Latest Posts</Text> */}
-        <Text style={styles.subtitle}>
+        <Text style={styles.logo}>Mogligram</Text>
+        <Text style={styles.description}>Connect • Share • Inspire</Text>
+        
+        {/* <Text style={styles.subtitle}>
           {posts.length} {posts.length === 1 ? 'post' : 'posts'} available
-        </Text>
+        </Text> */}
       </View>
 
       {loading && !refreshing ? (
@@ -186,7 +188,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 35,
+    paddingVertical: 10,
+    paddingTop: 35,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
@@ -235,6 +238,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 14,
     color: '#666',
+    textAlign: 'center',
   },
   listContent: {
     padding: 16,
@@ -337,6 +341,18 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'center',
     paddingHorizontal: 32,
+  },
+  logo: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#d9232d',
+    // marginBottom: 8,
+    textAlign: 'center',
+  },
+  description: {
+    fontSize: 12,
+    color: '#666',
+    textAlign: 'center',
   },
 });
 

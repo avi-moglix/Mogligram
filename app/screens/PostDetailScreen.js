@@ -6,12 +6,16 @@ import {
   SafeAreaView,
   ScrollView,
   ActivityIndicator,
+  Image,
+  Dimensions,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import Accordion from '@atom-design-mog/accordions';
 import AButton from '@atom-design-mog/buttons';
 import { setCurrentPost, setComments } from '../redux/postsSlice';
-import { fetchPostById, fetchCommentsByPostId } from '../utils/api';
+import { fetchPostById, fetchCommentsByPostId, fetchPhotosByAlbumId } from '../utils/api';
+
+const { width } = Dimensions.get('window');
 
 const PostDetailScreen = ({ route, navigation }) => {
   const { postId } = route.params;
@@ -20,6 +24,7 @@ const PostDetailScreen = ({ route, navigation }) => {
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [featuredPhoto, setFeaturedPhoto] = useState(null);
 
   useEffect(() => {
     loadPostDetails();
@@ -44,6 +49,13 @@ const PostDetailScreen = ({ route, navigation }) => {
       setLoading(false);
       return;
     }
+
+    // Set featured photo using Picsum Photos API (seed based on postId for consistency)
+    setFeaturedPhoto({
+      id: postId,
+      url: `https://picsum.photos/seed/${postId}/800/600`,
+      thumbnailUrl: `https://picsum.photos/seed/${postId}/400/300`,
+    });
 
     dispatch(setCurrentPost(postResult.data));
     dispatch(setComments(commentsResult.data));
@@ -136,6 +148,18 @@ const PostDetailScreen = ({ route, navigation }) => {
             </View>
 
             <Text style={styles.postTitle}>{currentPost.title}</Text>
+            
+            {/* Featured Photo */}
+            {featuredPhoto && (
+              <View style={styles.photoSection}>
+                <Image
+                  source={{ uri: featuredPhoto.url }}
+                  style={styles.featuredPhoto}
+                  resizeMode="cover"
+                />
+              </View>
+            )}
+            
             <Text style={styles.postBody}>{currentPost.body}</Text>
           </View>
         )}
@@ -281,6 +305,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     lineHeight: 24,
+  },
+  photoSection: {
+    marginVertical: 16,
+  },
+  featuredPhoto: {
+    width: '100%',
+    height: 250,
+    borderRadius: 12,
+    backgroundColor: '#f0f0f0',
   },
   commentsSection: {
     marginHorizontal: 16,

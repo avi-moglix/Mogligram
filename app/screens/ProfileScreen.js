@@ -35,7 +35,9 @@ const ProfileScreen = ({ navigation }) => {
     interests: profile.interests || '',
   });
 
-  const [savedFields, setSavedFields] = useState({});
+  const [isEditing, setIsEditing] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     setFormData({
@@ -49,34 +51,62 @@ const ProfileScreen = ({ navigation }) => {
       website: profile.website || '',
       interests: profile.interests || '',
     });
+    setHasUnsavedChanges(false);
+    setIsEditing(false);
   }, [profile]);
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleCancel = () => {
+    // Reset form data to original profile values
+    setFormData({
+      name: profile.name || '',
+      bio: profile.bio || '',
+      age: profile.age || '',
+      dateOfBirth: profile.dateOfBirth ? new Date(profile.dateOfBirth) : null,
+      location: profile.location || '',
+      phone: profile.phone || '',
+      company: profile.company || '',
+      website: profile.website || '',
+      interests: profile.interests || '',
+    });
+    setIsEditing(false);
+    setHasUnsavedChanges(false);
+  };
 
   const handleFieldChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // Mark field as unsaved
-    setSavedFields((prev) => ({ ...prev, [field]: false }));
+    setHasUnsavedChanges(true);
   };
 
-  const handleSaveField = async (field) => {
-    const value = formData[field];
+  const handleSaveProfile = async () => {
+    setIsSaving(true);
     
-    // Convert Date objects to ISO string for storage
-    const valueToStore = value instanceof Date ? value.toISOString() : value;
-    
-    // Update Redux
-    dispatch(updateProfileField({ field, value: valueToStore }));
-    
-    // Update AsyncStorage
-    const updatedProfile = { ...profile, [field]: valueToStore };
-    await saveUserProfile(updatedProfile);
-    
-    // Mark field as saved
-    setSavedFields((prev) => ({ ...prev, [field]: true }));
-    
-    // Show feedback
-    setTimeout(() => {
-      setSavedFields((prev) => ({ ...prev, [field]: null }));
-    }, 2000);
+    try {
+      // Convert Date objects to ISO string for storage
+      const processedData = { ...formData };
+      if (processedData.dateOfBirth instanceof Date) {
+        processedData.dateOfBirth = processedData.dateOfBirth.toISOString();
+      }
+      
+      // Update Redux with all fields
+      Object.entries(processedData).forEach(([field, value]) => {
+        dispatch(updateProfileField({ field, value }));
+      });
+      
+      // Update AsyncStorage
+      await saveUserProfile(processedData);
+      
+      setHasUnsavedChanges(false);
+      setIsEditing(false);
+      Alert.alert('Success', 'Profile updated successfully!');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to save profile. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleLogout = () => {
@@ -108,106 +138,52 @@ const ProfileScreen = ({ navigation }) => {
   ];
 
   const renderDropdownField = (field, label) => {
-    const isSaved = savedFields[field];
-    const hasChanged = formData[field] !== profile[field];
-
     return (
-      <View style={styles.fieldContainer} key={field}>
-        <View style={styles.fieldInputRow}>
-          <View style={styles.inputWrapper}>
-            <Dropdown
-              label={label}
-              placeholder="Select a company"
-              triggerText={formData[field] || 'Tap to choose'}
-              options={companyOptions}
-              onSelect={(value) => handleFieldChange(field, value)}
-            />
-          </View>
-          <AButton
-            title={isSaved ? 'Saved' : 'Save'}
-            onPress={() => handleSaveField(field)}
-            disabled={!hasChanged || !formData[field]}
-            color={!hasChanged || !formData[field] ? 'disabledText' : '#d9232d'}
-            size="small"
-            variant="solid"
-          />
-        </View>
-        {isSaved && (
-          <Text style={styles.savedText}>Saved successfully!</Text>
-        )}
+      <View style={styles.fieldItem} key={field} pointerEvents={!isEditing ? "none" : "auto"}>
+        <Dropdown
+          label={label}
+          placeholder="Select a company"
+          triggerText={formData[field] || 'Tap to choose'}
+          options={companyOptions}
+          onSelect={(value) => handleFieldChange(field, value)}
+          disabled={!isEditing}
+        />
       </View>
     );
   };
 
   const renderDateField = () => {
     const field = 'dateOfBirth';
-    const isSaved = savedFields[field];
-    
-    // Compare dates properly (convert both to ISO strings for comparison)
-    const currentValue = formData[field] instanceof Date ? formData[field].toISOString() : formData[field];
-    const savedValue = profile[field];
-    const hasChanged = currentValue !== savedValue;
 
     return (
-      <View style={styles.fieldContainer} key={field}>
-        <View style={styles.fieldInputRow}>
-          <View style={styles.inputWrapper}>
-            <DatePicker
-              type="date"
-              label="Date of Birth"
-              placeholder="Select your birth date"
-              value={formData[field]}
-              onChange={(date) => handleFieldChange(field, date)}
-            />
-          </View>
-          <AButton
-            title={isSaved ? 'Saved' : 'Save'}
-            onPress={() => handleSaveField(field)}
-            disabled={!hasChanged || !formData[field]}
-            color={!hasChanged || !formData[field] ? 'disabledText' : '#d9232d'}
-            size="small"
-            variant="solid"
-          />
-        </View>
-        {isSaved && (
-          <Text style={styles.savedText}>Saved successfully!</Text>
-        )}
+      <View style={styles.fieldItem} key={field}>
+        <DatePicker
+          type="date"
+          label="Date of Birth"
+          placeholder="Select your birth date"
+          value={formData[field]}
+          onChange={(date) => handleFieldChange(field, date)}
+          disabled={!isEditing}
+        />
       </View>
     );
   };
 
   const renderField = (field, label, placeholder, keyboardType = 'default', multiline = false) => {
-    const isSaved = savedFields[field];
-    const hasChanged = formData[field] !== profile[field];
-
     return (
-      <View style={styles.fieldContainer} key={field}>
+      <View style={styles.fieldItem} key={field}>
         <Text style={styles.fieldLabel}>{label}</Text>
-        <View style={styles.fieldInputRow}>
-          <View style={styles.inputWrapper}>
-            <Input
-              type="text"
-              placeholder={placeholder}
-              value={formData[field]}
-              onChangeText={(value) => handleFieldChange(field, value)}
-              keyboardType={keyboardType}
-              multiline={multiline}
-              numberOfLines={multiline ? 3 : 1}
-            />
-          </View>
-          <AButton
-            title={isSaved ? 'Saved' : 'Save'}
-            onPress={() => handleSaveField(field)}
-            disabled={!hasChanged || !formData[field].trim()}
-            color={!hasChanged || !formData[field].trim() ? 'disabledText' : '#d9232d'}
-            size="small"
-            variant="solid"
-          />
-
-        </View>
-        {isSaved && (
-          <Text style={styles.savedText}>Saved successfully!</Text>
-        )}
+        <Input
+          type="text"
+          placeholder={placeholder}
+          value={formData[field]}
+          onChangeText={(value) => handleFieldChange(field, value)}
+          keyboardType={keyboardType}
+          multiline={multiline}
+          numberOfLines={multiline ? 3 : 1}
+          editable={isEditing}
+          disabled={!isEditing}
+        />
       </View>
     );
   };
@@ -248,23 +224,98 @@ const ProfileScreen = ({ navigation }) => {
           <Text style={styles.progressHint}>
             Fill in all fields to complete your profile
           </Text>
+        {/* Action Buttons */}
+        {!isEditing ? (
+          <View style={styles.saveSection}>
+            <AButton
+              title="Edit Profile"
+              onPress={handleEdit}
+              color="#d9232d"
+              size="medium"
+              variant="text"
+            />
+          </View>
+        ) : (
+          <View style={styles.editActionsSection}>
+            <View style={styles.editButton}>
+              <AButton
+                title="Cancel"
+                onPress={handleCancel}
+                color="#666"
+                size="medium"
+                variant="text"
+              />
+            </View>
+            <View style={styles.editButton}>
+              <AButton
+                title={isSaving ? 'Saving...' : 'Save Changes'}
+                onPress={handleSaveProfile}
+                // disabled={!hasUnsavedChanges || isSaving}
+                // color={!hasUnsavedChanges || isSaving ? 'disabledText' : '#d9232d'}
+                color="#d9232d"
+                size="medium"
+                variant="text"
+              />
+            </View>
+          </View>
+        )}
         </View>
 
         {/* Profile Fields */}
         <View style={styles.fieldsSection}>
           <Text style={styles.sectionTitle}>Personal Information</Text>
-          {renderField('name', 'Full Name', 'Enter your full name')}
-          {renderField('bio', 'Bio', 'Tell us about yourself', 'default', true)}
-          {renderField('age', 'Age', 'Enter your age', 'numeric')}
-          {renderDateField()}
-          {renderField('phone', 'Phone Number', 'Enter your phone number', 'phone-pad')}
-          {renderField('location', 'Location', 'Enter your city/country')}
+          <View style={styles.sectionCard}>
+            {renderField('name', 'Full Name', 'Enter your full name')}
+            {renderField('bio', 'Bio', 'Tell us about yourself', 'default', true)}
+            {renderField('age', 'Age', 'Enter your age', 'numeric')}
+            {renderDateField()}
+            {renderField('phone', 'Phone Number', 'Enter your phone number', 'phone-pad')}
+            {renderField('location', 'Location', 'Enter your city/country')}
+          </View>
           
           <Text style={styles.sectionTitle}>Professional Information</Text>
-          {renderDropdownField('company', 'Company')}
-          {renderField('website', 'Website', 'Enter your website URL', 'url')}
-          {renderField('interests', 'Interests', 'Enter your interests (comma separated)', 'default', true)}
+          <View style={styles.sectionCard}>
+            {renderDropdownField('company', 'Company')}
+            {renderField('website', 'Website', 'Enter your website URL', 'url')}
+            {renderField('interests', 'Interests', 'Enter your interests (comma separated)', 'default', true)}
+          </View>
         </View>
+        
+        {/* Action Buttons */}
+        {!isEditing ? (
+          <View style={styles.saveSection}>
+            <AButton
+              title="Edit Profile"
+              onPress={handleEdit}
+              color="#d9232d"
+              size="medium"
+              variant="text"
+            />
+          </View>
+        ) : (
+          <View style={styles.editActionsSection}>
+            <View style={styles.editButton}>
+              <AButton
+                title="Cancel"
+                onPress={handleCancel}
+                color="#666"
+                size="medium"
+                variant="text"
+              />
+            </View>
+            <View style={styles.editButton}>
+              <AButton
+                title={isSaving ? 'Saving...' : 'Save Changes'}
+                onPress={handleSaveProfile}
+                // disabled={!hasUnsavedChanges || isSaving}
+                // color={!hasUnsavedChanges || isSaving ? 'disabledText' : '#d9232d'}
+                color="#d9232d"
+                size="medium"
+                variant="text"
+              />
+            </View>
+          </View>
+        )}
 
         {/* Logout Button */}
         <View style={styles.logoutSection}>
@@ -366,16 +417,19 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     marginTop: 8,
   },
-  fieldContainer: {
+  sectionCard: {
     backgroundColor: '#fff',
-    padding: 16,
+    padding: 20,
     borderRadius: 12,
     marginBottom: 12,
-    elevation: 1,
+    elevation: 2,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  fieldItem: {
+    marginBottom: 16,
   },
   fieldLabel: {
     fontSize: 14,
@@ -383,21 +437,21 @@ const styles = StyleSheet.create({
     color: '#333',
     marginBottom: 8,
   },
-  fieldInputRow: {
+  saveSection: {
+    marginTop: 24,
+    marginHorizontal: 16,
+  },
+  editActionsSection: {
+    marginTop: 24,
+    marginHorizontal: 16,
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    gap: 12,
   },
-  inputWrapper: {
+  editButton: {
     flex: 1,
-    marginRight: 8,
-  },
-  savedText: {
-    fontSize: 12,
-    color: '#4CAF50',
-    marginTop: 4,
   },
   logoutSection: {
-    marginTop: 24,
+    marginTop: 16,
     marginHorizontal: 16,
   },
 });
